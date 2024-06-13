@@ -40,6 +40,8 @@
     "chai": "~1.9.1",
     "exorcist": "^0.4.0",
     "mocha": "~1.21.4",
+    "riteway": "^7.1.0",
+    "tap-nirvana": "^1.1.0",
     "tsup": "^8.1.0",
     "typescript": "^5.4.5",
     "uglify-js": "^2.6.0",
