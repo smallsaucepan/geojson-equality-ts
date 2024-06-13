@@ -1,12 +1,25 @@
 import test from "tape";
-import { GeojsonEquality as Equality, geojsonEquality } from "../";
+import {
+  Feature,
+  LineString,
+  Position,
+  GeoJSON,
+  Point,
+  Polygon,
+  GeometryCollection,
+  FeatureCollection,
+  MultiLineString,
+  MultiPoint,
+  MultiPolygon,
+} from "geojson";
+import { geojsonEquality } from "./index.js";
 
 test("geojson-equality for Point", (t) => {
-  const g1 = { type: "Point", coordinates: [30, 10] },
-    g2 = { type: "Point", coordinates: [30, 10] },
-    g3 = { type: "Point", coordinates: [30, 11] },
-    g4 = { type: "Point", coordinates: [30, 10, 5] },
-    g5 = { type: "Point", coordinates: [30, 10, 5] };
+  const g1: Point = { type: "Point", coordinates: [30, 10] },
+    g2: Point = { type: "Point", coordinates: [30, 10] },
+    g3: Point = { type: "Point", coordinates: [30, 11] },
+    g4: Point = { type: "Point", coordinates: [30, 10, 5] },
+    g5: Point = { type: "Point", coordinates: [30, 10, 5] };
 
   t.true(geojsonEquality(g1, g2), "are equal");
 
@@ -23,7 +36,7 @@ test("geojson-equality for Point", (t) => {
 });
 
 test("geojson-equality for LineString", (t) => {
-  const g1 = {
+  const g1: LineString = {
       type: "LineString",
       coordinates: [
         [30, 10],
@@ -31,7 +44,7 @@ test("geojson-equality for LineString", (t) => {
         [40, 40],
       ],
     },
-    g2 = {
+    g2: LineString = {
       type: "LineString",
       coordinates: [
         [30, 10],
@@ -42,7 +55,7 @@ test("geojson-equality for LineString", (t) => {
 
   t.true(geojsonEquality(g1, g2), "are equal");
 
-  const g3 = {
+  const g3: LineString = {
     type: "LineString",
     coordinates: [
       [31, 10],
@@ -53,7 +66,7 @@ test("geojson-equality for LineString", (t) => {
 
   t.false(geojsonEquality(g1, g3), "are not equal");
 
-  const g4 = {
+  const g4: LineString = {
     type: "LineString",
     coordinates: [
       [40, 40],
@@ -76,7 +89,7 @@ test("geojson-equality for LineString", (t) => {
 });
 
 test("geojson-equality for Polygon", (t) => {
-  const g1 = {
+  const g1: Polygon = {
       type: "Polygon",
       coordinates: [
         [
@@ -88,7 +101,7 @@ test("geojson-equality for Polygon", (t) => {
         ],
       ],
     },
-    g2 = {
+    g2: Polygon = {
       type: "Polygon",
       coordinates: [
         [
@@ -103,7 +116,7 @@ test("geojson-equality for Polygon", (t) => {
 
   t.true(geojsonEquality(g1, g2), "are equal");
 
-  const g3 = {
+  const g3: Polygon = {
     type: "Polygon",
     coordinates: [
       [
@@ -118,7 +131,7 @@ test("geojson-equality for Polygon", (t) => {
 
   t.false(geojsonEquality(g1, g3), "are not equal");
 
-  const g4 = {
+  const g4: Polygon = {
     type: "Polygon",
     coordinates: [
       [
@@ -141,7 +154,7 @@ test("geojson-equality for Polygon", (t) => {
     "reverse direction, direction is matched, so both are not equal"
   );
 
-  const g5 = {
+  const g5: Polygon = {
     type: "Polygon",
     coordinates: [
       [
@@ -164,7 +177,7 @@ test("geojson-equality for Polygon", (t) => {
     "reverse direction, diff start index, direction is matched, so both are not equal"
   );
 
-  const gh1 = {
+  const gh1: Polygon = {
       type: "Polygon",
       coordinates: [
         [
@@ -182,7 +195,7 @@ test("geojson-equality for Polygon", (t) => {
         ],
       ],
     },
-    gh2 = {
+    gh2: Polygon = {
       type: "Polygon",
       coordinates: [
         [
@@ -211,7 +224,7 @@ test("geojson-equality for Polygon", (t) => {
     "have holes too and diff start ind, direction is matched, so both are not equal"
   );
 
-  const gprecision1 = {
+  const gprecision1: Polygon = {
       type: "Polygon",
       coordinates: [
         [
@@ -223,7 +236,7 @@ test("geojson-equality for Polygon", (t) => {
         ],
       ],
     },
-    gprecision2 = {
+    gprecision2: Polygon = {
       type: "Polygon",
       coordinates: [
         [
@@ -251,16 +264,32 @@ test("geojson-equality for Polygon", (t) => {
 
 test("geojson-equality for Feature", (t) => {
   {
-    const f1 = { type: "Feature", id: "id1" },
-      f2 = { type: "Feature", id: "id2" };
+    const f1: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
+        properties: {},
+      },
+      f2: Feature<any> = {
+        type: "Feature",
+        id: "id2",
+        geometry: null,
+        properties: {},
+      };
     t.false(geojsonEquality(f1, f2), "will not be equal with changed id");
   }
 
   {
-    const f1 = { type: "Feature", id: "id1", properties: { foo: "bar" } },
-      f2 = {
+    const f1: Feature<any> = {
         type: "Feature",
         id: "id1",
+        geometry: null,
+        properties: { foo: "bar" },
+      },
+      f2: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
         properties: { foo1: "bar", foo2: "bar" },
       };
     t.false(
@@ -270,8 +299,18 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = { type: "Feature", id: "id1", properties: { foo1: "bar" } },
-      f2 = { type: "Feature", id: "id1", properties: { foo2: "bar" } };
+    const f1: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
+        properties: { foo1: "bar" },
+      },
+      f2: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
+        properties: { foo2: "bar" },
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal with different keys in properties"
@@ -279,8 +318,18 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = { type: "Feature", id: "id1", properties: { foo: "bar1" } },
-      f2 = { type: "Feature", id: "id1", properties: { foo: "bar2" } };
+    const f1: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
+        properties: { foo: "bar1" },
+      },
+      f2: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
+        properties: { foo: "bar2" },
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal with different properties"
@@ -288,7 +337,7 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo: "bar1" },
@@ -305,7 +354,7 @@ test("geojson-equality for Feature", (t) => {
           ],
         },
       },
-      f2 = {
+      f2: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo: "bar1" },
@@ -329,13 +378,13 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: Feature<Point> = {
         type: "Feature",
         id: "id1",
         properties: { foo: { bar: "baz" } },
         geometry: { type: "Point", coordinates: [0, 1] },
       },
-      f2 = {
+      f2: Feature<Point> = {
         type: "Feature",
         id: "id1",
         properties: { foo: { bar: "baz" } },
@@ -345,13 +394,13 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: Feature<Point> = {
         type: "Feature",
         id: "id1",
         properties: { foo: { bar: "baz" } },
         geometry: { type: "Point", coordinates: [0, 1] },
       },
-      f2 = {
+      f2: Feature<Point> = {
         type: "Feature",
         id: "id1",
         properties: { foo: { bar: "baz2" } },
@@ -363,9 +412,10 @@ test("geojson-equality for Feature", (t) => {
     );
   }
 
-  if (false) {
+  /*
+  {
     // Temporarily disabled as not needed specifically for Turfjs.
-    const f1 = {
+    const f1: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo_123: "bar" },
@@ -382,7 +432,7 @@ test("geojson-equality for Feature", (t) => {
           ],
         },
       },
-      f2 = {
+      f2: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo_456: "bar" },
@@ -408,10 +458,22 @@ test("geojson-equality for Feature", (t) => {
       "will use a custom comparator if provided"
     );
   }
+  */
 
   {
-    const f1 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 4] },
-      f2 = { type: "Feature", id: "id1" };
+    const f1: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        bbox: [1, 2, 3, 4],
+        geometry: null,
+        properties: {},
+      },
+      f2: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        geometry: null,
+        properties: {},
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal if one has bbox and other not"
@@ -419,8 +481,20 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 4] },
-      f2 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 5] };
+    const f1: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        bbox: [1, 2, 3, 4],
+        geometry: null,
+        properties: {},
+      },
+      f2: Feature<any> = {
+        type: "Feature",
+        id: "id1",
+        bbox: [1, 2, 3, 5],
+        geometry: null,
+        properties: {},
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal if bboxes are not equal"
@@ -428,7 +502,7 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo: "bar1" },
@@ -446,7 +520,7 @@ test("geojson-equality for Feature", (t) => {
         },
         bbox: [10, 10, 41, 40],
       },
-      f2 = {
+      f2: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo: "bar1" },
@@ -468,7 +542,7 @@ test("geojson-equality for Feature", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo: "bar1" },
@@ -486,7 +560,7 @@ test("geojson-equality for Feature", (t) => {
         },
         bbox: [10, 10, 41, 40],
       },
-      f2 = {
+      f2: Feature<Polygon> = {
         type: "Feature",
         id: "id1",
         properties: { foo: "bar1" },
@@ -512,25 +586,28 @@ test("geojson-equality for Feature", (t) => {
 
 test("geojson-equality for FeatureCollection", (t) => {
   {
-    const f1 = {
+    const f1: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
           },
         ],
       },
-      f2 = {
+      f2: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
           },
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
           },
         ],
       };
@@ -541,21 +618,23 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
           },
         ],
       },
-      f2 = {
+      f2: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [1, 1] },
+            properties: {},
           },
         ],
       };
@@ -566,29 +645,33 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
           },
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [1, 1] },
+            properties: {},
           },
         ],
       },
-      f2 = {
+      f2: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [1, 1] },
+            properties: {},
           },
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
           },
         ],
       };
@@ -599,21 +682,23 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [1, 1] },
+            properties: {},
           },
         ],
       },
-      f2 = {
+      f2: FeatureCollection<Point> = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [1, 1] },
+            properties: {},
           },
         ],
       };
@@ -621,11 +706,11 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: FeatureCollection<any> = {
         type: "FeatureCollection",
         features: [],
       },
-      f2 = {
+      f2: FeatureCollection<any> = {
         type: "FeatureCollection",
         features: [],
       };
@@ -635,9 +720,10 @@ test("geojson-equality for FeatureCollection", (t) => {
     );
   }
 
-  if (false) {
+  /*
+  {
     // Temporarily disabled as not needed specifically for Turfjs.
-    const f1 = {
+    const f1: FeatureCollection<Polygon> = {
         type: "FeatureCollection",
         features: [
           {
@@ -659,7 +745,7 @@ test("geojson-equality for FeatureCollection", (t) => {
           },
         ],
       },
-      f2 = {
+      f2: FeatureCollection<Polygon> = {
         type: "FeatureCollection",
         features: [
           {
@@ -690,10 +776,18 @@ test("geojson-equality for FeatureCollection", (t) => {
       "will use a custom comparator if provided"
     );
   }
+  */
 
   {
-    const f1 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 4] },
-      f2 = { type: "FeatureCollection", features: "[]" };
+    const f1: FeatureCollection<any> = {
+        type: "FeatureCollection",
+        features: [],
+        bbox: [1, 2, 3, 4],
+      },
+      f2: FeatureCollection<any> = {
+        type: "FeatureCollection",
+        features: [],
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal if one has bbox and other not"
@@ -701,8 +795,16 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 4] },
-      f2 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 5] };
+    const f1: FeatureCollection<any> = {
+        type: "FeatureCollection",
+        features: [],
+        bbox: [1, 2, 3, 4],
+      },
+      f2: FeatureCollection<any> = {
+        type: "FeatureCollection",
+        features: [],
+        bbox: [1, 2, 3, 5],
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal if bboxes are not equal"
@@ -710,7 +812,7 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: FeatureCollection<Polygon> = {
         type: "FeatureCollection",
         features: [
           {
@@ -733,7 +835,7 @@ test("geojson-equality for FeatureCollection", (t) => {
         ],
         bbox: [10, 10, 41, 40],
       },
-      f2 = {
+      f2: FeatureCollection<Polygon> = {
         type: "FeatureCollection",
         features: [
           {
@@ -760,7 +862,7 @@ test("geojson-equality for FeatureCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: FeatureCollection<Polygon> = {
         type: "FeatureCollection",
         features: [
           {
@@ -783,7 +885,7 @@ test("geojson-equality for FeatureCollection", (t) => {
         ],
         bbox: [10, 10, 41, 40],
       },
-      f2 = {
+      f2: FeatureCollection<Polygon> = {
         type: "FeatureCollection",
         features: [
           {
@@ -813,7 +915,7 @@ test("geojson-equality for FeatureCollection", (t) => {
 });
 
 test("geojson-equality for MultiPoint", (t) => {
-  const g1 = {
+  const g1: MultiPoint = {
       type: "MultiPoint",
       coordinates: [
         [0, 40],
@@ -822,7 +924,7 @@ test("geojson-equality for MultiPoint", (t) => {
         [30, 10],
       ],
     },
-    g2 = {
+    g2: MultiPoint = {
       type: "MultiPoint",
       coordinates: [
         [0, 40],
@@ -834,7 +936,7 @@ test("geojson-equality for MultiPoint", (t) => {
 
   t.true(geojsonEquality(g1, g2), "are equal");
 
-  const g3 = {
+  const g3: MultiPoint = {
     type: "MultiPoint",
     coordinates: [
       [10, 40],
@@ -850,7 +952,7 @@ test("geojson-equality for MultiPoint", (t) => {
 });
 
 test("geojson-equality for MultiLineString", (t) => {
-  const g1 = {
+  const g1: MultiLineString = {
       type: "MultiLineString",
       coordinates: [
         [
@@ -865,7 +967,7 @@ test("geojson-equality for MultiLineString", (t) => {
         ],
       ],
     },
-    g2 = {
+    g2: MultiLineString = {
       type: "MultiLineString",
       coordinates: [
         [
@@ -891,7 +993,7 @@ test("geojson-equality for MultiLineString", (t) => {
     "reverse direction, direction is matched, so both are not equal"
   );
 
-  const g3 = {
+  const g3: MultiLineString = {
     type: "MultiLineString",
     coordinates: [
       [
@@ -914,7 +1016,7 @@ test("geojson-equality for MultiLineString", (t) => {
 });
 
 test("geojson-equality for MultiPolygon", (t) => {
-  const g1 = {
+  const g1: MultiPolygon = {
       type: "MultiPolygon",
       coordinates: [
         [
@@ -936,7 +1038,7 @@ test("geojson-equality for MultiPolygon", (t) => {
         ],
       ],
     },
-    g2 = {
+    g2: MultiPolygon = {
       type: "MultiPolygon",
       coordinates: [
         [
@@ -961,7 +1063,7 @@ test("geojson-equality for MultiPolygon", (t) => {
 
   t.true(geojsonEquality(g1, g2), "both are equal");
 
-  const g3 = {
+  const g3: MultiPolygon = {
     type: "MultiPolygon",
     coordinates: [
       [
@@ -986,7 +1088,7 @@ test("geojson-equality for MultiPolygon", (t) => {
 
   t.false(geojsonEquality(g1, g3), "both are not equal");
 
-  const gh1 = {
+  const gh1: MultiPolygon = {
       type: "MultiPolygon",
       coordinates: [
         [
@@ -1021,7 +1123,7 @@ test("geojson-equality for MultiPolygon", (t) => {
         ],
       ],
     },
-    gh2 = {
+    gh2: MultiPolygon = {
       type: "MultiPolygon",
       coordinates: [
         [
@@ -1064,11 +1166,11 @@ test("geojson-equality for MultiPolygon", (t) => {
 
 test("geojson-equality for GeometryCollection", (t) => {
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [0, 0] }],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           { type: "Point", coordinates: [0, 0] },
@@ -1082,11 +1184,11 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [0, 0] }],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [1, 1] }],
       };
@@ -1097,14 +1199,14 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           { type: "Point", coordinates: [0, 0] },
           { type: "Point", coordinates: [1, 1] },
         ],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           { type: "Point", coordinates: [1, 1] },
@@ -1118,11 +1220,11 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [0, 0] }],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [0, 0] }],
       };
@@ -1130,11 +1232,11 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [],
       };
@@ -1145,12 +1247,12 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [],
         bbox: [1, 2, 3, 4],
       },
-      f2 = { type: "GeometryCollection", geometries: "[]" };
+      f2: GeometryCollection = { type: "GeometryCollection", geometries: [] };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal if one has bbox and other not"
@@ -1158,12 +1260,16 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [],
         bbox: [1, 2, 3, 4],
       },
-      f2 = { type: "GeometryCollection", geometries: [], bbox: [1, 2, 3, 5] };
+      f2: GeometryCollection = {
+        type: "GeometryCollection",
+        geometries: [],
+        bbox: [1, 2, 3, 5],
+      };
     t.false(
       geojsonEquality(f1, f2),
       "will not be equal if bboxes are not equal"
@@ -1171,7 +1277,7 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           {
@@ -1189,7 +1295,7 @@ test("geojson-equality for GeometryCollection", (t) => {
         ],
         bbox: [10, 10, 41, 40],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           {
@@ -1211,7 +1317,7 @@ test("geojson-equality for GeometryCollection", (t) => {
   }
 
   {
-    const f1 = {
+    const f1: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           {
@@ -1229,7 +1335,7 @@ test("geojson-equality for GeometryCollection", (t) => {
         ],
         bbox: [10, 10, 41, 40],
       },
-      f2 = {
+      f2: GeometryCollection = {
         type: "GeometryCollection",
         geometries: [
           {

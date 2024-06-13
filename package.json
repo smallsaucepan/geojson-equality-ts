@@ -24,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "tsx test/test.js",
+    "test": "tsx test.ts",
     "build": "tsup"
   },
   "repository": {
