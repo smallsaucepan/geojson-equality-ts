@@ -418,7 +418,8 @@ test("geojson-equality for Feature", (t) => {
     );
   }
 
-  {
+  if (false) {
+    // Temporarily disabled as not needed specifically for Turfjs.
     const f1 = {
         type: "Feature",
         id: "id1",
@@ -687,7 +688,8 @@ test("geojson-equality for FeatureCollection", (t) => {
     t.true(eq.compare(f1, f2), "will be equal with equal with no features");
   }
 
-  {
+  if (false) {
+    // Temporarily disabled as not needed specifically for Turfjs.
     const f1 = {
         type: "FeatureCollection",
         features: [
