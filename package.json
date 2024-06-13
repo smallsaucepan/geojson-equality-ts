@@ -40,6 +40,8 @@
     "chai": "~1.9.1",
     "exorcist": "^0.4.0",
     "mocha": "~1.21.4",
+    "tsup": "^8.1.0",
+    "typescript": "^5.4.5",
     "uglify-js": "^2.6.0",
     "watchify": "~1.0.2"
   }
