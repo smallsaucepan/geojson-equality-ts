@@ -1,78 +1,132 @@
-# geojson-equality
+# geojson-equality-ts
 
 Check two valid geojson geometries for equality.
 
 ## installation
 
 ```
-npm install geojson-equality
+npm install geojson-equality-ts
 ```
 
 ## usage
-```javascript
-var GeojsonEquality = require('geojson-equality');
-var eq = new GeojsonEquality();
- 
-var g1 = { "type": "Polygon", "coordinates": [
-  [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]
-]};
-var g2 = { "type": "Polygon", "coordinates": [
-  [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]
-]};
 
-eq.compare(g1,g2);    // returns true
-var g3 = { "type": "Polygon", "coordinates": [
-  [[300, 100], [400, 400], [200, 400], [100, 200], [300, 100]]
-]};
+Use as either a class or function.
 
-eq.compare(g1,g3);    // returns false
-```
-For including in browser, download file [geojson-equality.min.js](//raw.githubusercontent.com/geosquare/geojson-equality/master/dist/geojson-equality.min.js)
-```html
-<script type="text/javascipt" src="path/to/geojson-equality.min.js"></script>
-```
-This create a global variable 'GeojsonEquality'
-GeojsonEquality class can be initiated with many options that are used to match the geojson.
-* **precision** number as floating points precision required. Defualt is **17**
 ```javascript
-var g1 = { "type": "Point", "coordinates": [30.2, 10] };
-var g2 = { "type": "Point", "coordinates": [30.22233, 10] };
-var eq = new GeojsonEquality({precision: 3});
-eq.compare(g1,g2);  // returns false
-var eq = new GeojsonEquality({precision: 1});
-eq.compare(g1,g2);  // returns true
-```
-* **direction** true | false, direction of LineString or Polygon (orientation) is ignored if false. Default is **false**.
-```javascript
-  var g1 = { "type": "LineString", "coordinates": 
-    [ [30, 10], [10, 30], [40, 40] ] };
-  var g2 = { "type": "LineString", "coordinates": 
-    [ [40, 40], [10, 30], [30, 10] ] };
-  var eq = new GeojsonEquality({direction: false});
-  eq.compare(g1,g2);  // returns true
-  var eq = new GeojsonEquality({direction: true});
-  eq.compare(g1,g2);  // returns false
+import { geojsonEquality, GeojsonEquality } from "geojson-equality";
+
+geojsonEquality(g1, g2, { precision: 3 }); // returns boolean
+
+const eq = new GeojsonEquality({ precision: 3 });
+eq.compare(g1, g2); // returns boolean
 ```
 
-* **objectComparator** function, custom function for use in comparing Feature properties. Default is a shallow comparison.
+In more detail.
+
 ```javascript
-  // using lodash isEqual to deep comparison
-  var isEqual = require('lodash/lang/isEqual')
-  var eq = new GeojsonEquality({objectComparator: isEqual});
+const GeojsonEquality = require("geojson-equality");
+const eq = new GeojsonEquality();
+
+const g1 = {
+    type: "Polygon",
+    coordinates: [
+      [
+        [30, 10],
+        [40, 40],
+        [20, 40],
+        [10, 20],
+        [30, 10],
+      ],
+    ],
+  },
+  g2 = {
+    type: "Polygon",
+    coordinates: [
+      [
+        [30, 10],
+        [40, 40],
+        [20, 40],
+        [10, 20],
+        [30, 10],
+      ],
+    ],
+  };
+
+eq.compare(g1, g2); // returns true
+const g3 = {
+  type: "Polygon",
+  coordinates: [
+    [
+      [300, 100],
+      [400, 400],
+      [200, 400],
+      [100, 200],
+      [300, 100],
+    ],
+  ],
+};
+
+eq.compare(g1, g3); // returns false
+```
+
+- **precision** number as floating points precision required. Defualt is **17**
+
+```javascript
+const g1 = { type: "Point", coordinates: [30.2, 10] };
+const g2 = { type: "Point", coordinates: [30.22233, 10] };
+
+geojsonEquality(g1, g2, { precision: 3 }); // returns false
+
+geojsonEquality(g1, g2, { precision: 1 }); // returns true
+```
+
+- **direction** true | false, direction of LineString or Polygon (orientation) is ignored if false. Default is **false**.
+
+```javascript
+const g1 = {
+    type: "LineString",
+    coordinates: [
+      [30, 10],
+      [10, 30],
+      [40, 40],
+    ],
+  },
+  g2 = {
+    type: "LineString",
+    coordinates: [
+      [40, 40],
+      [10, 30],
+      [30, 10],
+    ],
+  };
+
+geojsonEquality(g1, g2, { direction: false }); // returns true
+
+geojsonEquality(g1, g2, { direction: true }); // returns false
+```
+
+- **objectComparator** **Temporarily disabled** function, custom function for use in comparing Feature properties. Default is a shallow comparison.
+
+```javascript
+// using lodash isEqual to deep comparison
+const isEqual = require("lodash/lang/isEqual");
+const eq = new GeojsonEquality({ objectComparator: isEqual });
 ```
 
 ## developing
+
 Once you run
 
-```npm install```
+`npm install`
 
 then for running test
 
-```npm run test```
+`npm run test`
 
 to create build
 
-```npm run build```
+`npm run build`
 
 ## license
+
 This project is licensed under the terms of the MIT license.

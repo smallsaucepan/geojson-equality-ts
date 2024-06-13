@@ -21,7 +21,7 @@ import equal from "deep-equal";
  * @memberof helpers
  * @type {Class}
  */
-export class GeojsonEquality {
+class GeojsonEquality {
   private precision: number;
   private direction = false;
   private compareProperties = true;
@@ -196,3 +196,20 @@ function explode(g: MultiLineString | MultiPoint | MultiPolygon) {
     coordinates: part,
   }));
 }
+
+function geojsonEquality(
+  g1: GeoJSON,
+  g2: GeoJSON,
+  opts?: {
+    precision?: number;
+    direction?: boolean;
+    compareProperties?: boolean;
+  }
+): boolean {
+  const eq = new GeojsonEquality(opts);
+
+  return eq.compare(g1, g2);
+}
+
+export { GeojsonEquality, geojsonEquality };
+export default GeojsonEquality;

@@ -1,5 +1,5 @@
 import test from "tape";
-import { GeojsonEquality as Equality } from "../";
+import { GeojsonEquality as Equality, geojsonEquality } from "../";
 
 test("geojson-equality for Point", (t) => {
   const g1 = { type: "Point", coordinates: [30, 10] },
@@ -8,28 +8,16 @@ test("geojson-equality for Point", (t) => {
     g4 = { type: "Point", coordinates: [30, 10, 5] },
     g5 = { type: "Point", coordinates: [30, 10, 5] };
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(g1, g2), "are equal");
-  }
+  t.true(geojsonEquality(g1, g2), "are equal");
 
-  {
-    const eq = new Equality();
-    t.false(eq.compare(g1, g3), "are not equal");
-  }
+  t.false(geojsonEquality(g1, g3), "are not equal");
 
-  {
-    const eq = new Equality();
-    t.false(
-      eq.compare(g1, g4),
-      "are not equal with different point dimensions"
-    );
-  }
+  t.false(
+    geojsonEquality(g1, g4),
+    "are not equal with different point dimensions"
+  );
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(g4, g5), "are equal with 3d points");
-  }
+  t.true(geojsonEquality(g4, g5), "are equal with 3d points");
 
   t.end();
 });
@@ -52,10 +40,7 @@ test("geojson-equality for LineString", (t) => {
       ],
     };
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(g1, g2), "are equal");
-  }
+  t.true(geojsonEquality(g1, g2), "are equal");
 
   const g3 = {
     type: "LineString",
@@ -66,10 +51,7 @@ test("geojson-equality for LineString", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.false(eq.compare(g1, g3), "are not equal");
-  }
+  t.false(geojsonEquality(g1, g3), "are not equal");
 
   const g4 = {
     type: "LineString",
@@ -80,55 +62,46 @@ test("geojson-equality for LineString", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.true(
-      eq.compare(g1, g4),
-      "reverse direction, direction is not matched, so both are equal"
-    );
-  }
+  t.true(
+    geojsonEquality(g1, g4),
+    "reverse direction, direction is not matched, so both are equal"
+  );
 
-  {
-    const eq = new Equality({ direction: true });
-    t.false(
-      eq.compare(g1, g4),
-      "reverse direction, direction is matched, so both are not equal"
-    );
-  }
+  t.false(
+    geojsonEquality(g1, g4, { direction: true }),
+    "reverse direction, direction is matched, so both are not equal"
+  );
 
   t.end();
 });
 
 test("geojson-equality for Polygon", (t) => {
   const g1 = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [30, 10],
-        [40, 40],
-        [20, 40],
-        [10, 20],
-        [30, 10],
+      type: "Polygon",
+      coordinates: [
+        [
+          [30, 10],
+          [40, 40],
+          [20, 40],
+          [10, 20],
+          [30, 10],
+        ],
       ],
-    ],
-  };
-  const g2 = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [30, 10],
-        [40, 40],
-        [20, 40],
-        [10, 20],
-        [30, 10],
+    },
+    g2 = {
+      type: "Polygon",
+      coordinates: [
+        [
+          [30, 10],
+          [40, 40],
+          [20, 40],
+          [10, 20],
+          [30, 10],
+        ],
       ],
-    ],
-  };
+    };
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(g1, g2), "are equal");
-  }
+  t.true(geojsonEquality(g1, g2), "are equal");
 
   const g3 = {
     type: "Polygon",
@@ -143,10 +116,7 @@ test("geojson-equality for Polygon", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.false(eq.compare(g1, g3), "are not equal");
-  }
+  t.false(geojsonEquality(g1, g3), "are not equal");
 
   const g4 = {
     type: "Polygon",
@@ -161,21 +131,15 @@ test("geojson-equality for Polygon", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.true(
-      eq.compare(g1, g4),
-      "reverse direction, direction is not matched, so both are equal"
-    );
-  }
+  t.true(
+    geojsonEquality(g1, g4),
+    "reverse direction, direction is not matched, so both are equal"
+  );
 
-  {
-    const eq = new Equality({ direction: true });
-    t.false(
-      eq.compare(g1, g4),
-      "reverse direction, direction is matched, so both are not equal"
-    );
-  }
+  t.false(
+    geojsonEquality(g1, g4, { direction: true }),
+    "reverse direction, direction is matched, so both are not equal"
+  );
 
   const g5 = {
     type: "Polygon",
@@ -190,125 +154,106 @@ test("geojson-equality for Polygon", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.true(
-      eq.compare(g1, g5),
-      "reverse direction, diff start index, direction is not matched, so both are equal"
-    );
-  }
+  t.true(
+    geojsonEquality(g1, g5),
+    "reverse direction, diff start index, direction is not matched, so both are equal"
+  );
 
-  {
-    const eq = new Equality({ direction: true });
-    t.false(
-      eq.compare(g1, g5),
-      "reverse direction, diff start index, direction is matched, so both are not equal"
-    );
-  }
+  t.false(
+    geojsonEquality(g1, g5, { direction: true }),
+    "reverse direction, diff start index, direction is matched, so both are not equal"
+  );
 
   const gh1 = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [45, 45],
-        [15, 40],
-        [10, 20],
-        [35, 10],
-        [45, 45],
+      type: "Polygon",
+      coordinates: [
+        [
+          [45, 45],
+          [15, 40],
+          [10, 20],
+          [35, 10],
+          [45, 45],
+        ],
+        [
+          [20, 30],
+          [35, 35],
+          [30, 20],
+          [20, 30],
+        ],
       ],
-      [
-        [20, 30],
-        [35, 35],
-        [30, 20],
-        [20, 30],
+    },
+    gh2 = {
+      type: "Polygon",
+      coordinates: [
+        [
+          [35, 10],
+          [45, 45],
+          [15, 40],
+          [10, 20],
+          [35, 10],
+        ],
+        [
+          [20, 30],
+          [35, 35],
+          [30, 20],
+          [20, 30],
+        ],
       ],
-    ],
-  };
-  const gh2 = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [35, 10],
-        [45, 45],
-        [15, 40],
-        [10, 20],
-        [35, 10],
-      ],
-      [
-        [20, 30],
-        [35, 35],
-        [30, 20],
-        [20, 30],
-      ],
-    ],
-  };
+    };
 
-  {
-    const eq = new Equality({ direction: false });
-    t.true(
-      eq.compare(gh1, gh2),
-      "have holes too and diff start ind, direction is not matched, both are equal"
-    );
-  }
+  t.true(
+    geojsonEquality(gh1, gh2, { direction: false }),
+    "have holes too and diff start ind, direction is not matched, both are equal"
+  );
 
-  {
-    const eq = new Equality({ direction: true });
-    t.true(
-      eq.compare(gh1, gh2),
-      "have holes too and diff start ind, direction is matched, so both are not equal"
-    );
-  }
+  t.true(
+    geojsonEquality(gh1, gh2, { direction: true }),
+    "have holes too and diff start ind, direction is matched, so both are not equal"
+  );
 
   const gprecision1 = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [30, 10],
-        [40.12345, 40.12345],
-        [20, 40],
-        [10, 20],
-        [30, 10],
+      type: "Polygon",
+      coordinates: [
+        [
+          [30, 10],
+          [40.12345, 40.12345],
+          [20, 40],
+          [10, 20],
+          [30, 10],
+        ],
       ],
-    ],
-  };
-  const gprecision2 = {
-    type: "Polygon",
-    coordinates: [
-      [
-        [30, 10],
-        [40.123389, 40.123378],
-        [20, 40],
-        [10, 20],
-        [30, 10],
+    },
+    gprecision2 = {
+      type: "Polygon",
+      coordinates: [
+        [
+          [30, 10],
+          [40.123389, 40.123378],
+          [20, 40],
+          [10, 20],
+          [30, 10],
+        ],
       ],
-    ],
-  };
+    };
 
-  {
-    const eq = new Equality({ precision: 3 });
-    t.true(
-      eq.compare(gprecision1, gprecision2),
-      "after limiting precision, are equal"
-    );
-  }
+  t.true(
+    geojsonEquality(gprecision1, gprecision2, { precision: 3 }),
+    "after limiting precision, are equal"
+  );
 
-  {
-    const eq = new Equality({ precision: 10 });
-    t.false(
-      eq.compare(gprecision1, gprecision2),
-      "with high precision, are not equal"
-    );
-  }
+  t.false(
+    geojsonEquality(gprecision1, gprecision2, { precision: 10 }),
+    "with high precision, are not equal"
+  );
 
   t.end();
 });
 
 test("geojson-equality for Feature", (t) => {
   {
-    const f1 = { type: "Feature", id: "id1" };
-    const f2 = { type: "Feature", id: "id2" };
-    const eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal with changed id");
+    const f1 = { type: "Feature", id: "id1" },
+      f2 = { type: "Feature", id: "id2" };
+    t.false(geojsonEquality(f1, f2), "will not be equal with changed id");
   }
 
   {
@@ -317,29 +262,29 @@ test("geojson-equality for Feature", (t) => {
         type: "Feature",
         id: "id1",
         properties: { foo1: "bar", foo2: "bar" },
-      },
-      eq = new Equality();
+      };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different count of properties"
     );
   }
 
   {
     const f1 = { type: "Feature", id: "id1", properties: { foo1: "bar" } },
-      f2 = { type: "Feature", id: "id1", properties: { foo2: "bar" } },
-      eq = new Equality();
+      f2 = { type: "Feature", id: "id1", properties: { foo2: "bar" } };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different keys in properties"
     );
   }
 
   {
     const f1 = { type: "Feature", id: "id1", properties: { foo: "bar1" } },
-      f2 = { type: "Feature", id: "id1", properties: { foo: "bar2" } },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal with different properties");
+      f2 = { type: "Feature", id: "id1", properties: { foo: "bar2" } };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal with different properties"
+    );
   }
 
   {
@@ -376,9 +321,11 @@ test("geojson-equality for Feature", (t) => {
             ],
           ],
         },
-      },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal with different geometry");
+      };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal with different geometry"
+    );
   }
 
   {
@@ -393,9 +340,8 @@ test("geojson-equality for Feature", (t) => {
         id: "id1",
         properties: { foo: { bar: "baz" } },
         geometry: { type: "Point", coordinates: [0, 1] },
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "will be equal with nested properties");
+      };
+    t.true(geojsonEquality(f1, f2), "will be equal with nested properties");
   }
 
   {
@@ -410,10 +356,9 @@ test("geojson-equality for Feature", (t) => {
         id: "id1",
         properties: { foo: { bar: "baz2" } },
         geometry: { type: "Point", coordinates: [0, 1] },
-      },
-      eq = new Equality();
+      };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different nested properties"
     );
   }
@@ -453,30 +398,33 @@ test("geojson-equality for Feature", (t) => {
             ],
           ],
         },
-      },
-      eq = new Equality({
+      };
+    t.true(
+      geojsonEquality(f1, f2, {
         objectComparator: function (obj1, obj2) {
           return "foo_123" in obj1 && "foo_456" in obj2;
         },
-      });
-    t.true(eq.compare(f1, f2), "will use a custom comparator if provided");
+      }),
+      "will use a custom comparator if provided"
+    );
   }
 
   {
     const f1 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 4] },
-      f2 = { type: "Feature", id: "id1" },
-      eq = new Equality();
+      f2 = { type: "Feature", id: "id1" };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal if one has bbox and other not"
     );
   }
 
   {
     const f1 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 4] },
-      f2 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 5] },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal if bboxes are not equal");
+      f2 = { type: "Feature", id: "id1", bbox: [1, 2, 3, 5] };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal if bboxes are not equal"
+    );
   }
 
   {
@@ -515,9 +463,8 @@ test("geojson-equality for Feature", (t) => {
           ],
         },
         bbox: [10, 10, 41, 40],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "equal features with bboxes");
+      };
+    t.true(geojsonEquality(f1, f2), "equal features with bboxes");
   }
 
   {
@@ -556,9 +503,8 @@ test("geojson-equality for Feature", (t) => {
           ],
         },
         bbox: [10, 10, 41, 40],
-      },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "not equal features with equal bboxes");
+      };
+    t.false(geojsonEquality(f1, f2), "not equal features with equal bboxes");
   }
 
   t.end();
@@ -587,10 +533,9 @@ test("geojson-equality for FeatureCollection", (t) => {
             geometry: { type: "Point", coordinates: [0, 0] },
           },
         ],
-      },
-      eq = new Equality();
+      };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different number of features"
     );
   }
@@ -613,9 +558,11 @@ test("geojson-equality for FeatureCollection", (t) => {
             geometry: { type: "Point", coordinates: [1, 1] },
           },
         ],
-      },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal with different features");
+      };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal with different features"
+    );
   }
 
   {
@@ -644,10 +591,9 @@ test("geojson-equality for FeatureCollection", (t) => {
             geometry: { type: "Point", coordinates: [0, 0] },
           },
         ],
-      },
-      eq = new Equality();
+      };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different order of features"
     );
   }
@@ -670,9 +616,8 @@ test("geojson-equality for FeatureCollection", (t) => {
             geometry: { type: "Point", coordinates: [1, 1] },
           },
         ],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "will be equal with equal features");
+      };
+    t.true(geojsonEquality(f1, f2), "will be equal with equal features");
   }
 
   {
@@ -683,9 +628,11 @@ test("geojson-equality for FeatureCollection", (t) => {
       f2 = {
         type: "FeatureCollection",
         features: [],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "will be equal with equal with no features");
+      };
+    t.true(
+      geojsonEquality(f1, f2),
+      "will be equal with equal with no features"
+    );
   }
 
   if (false) {
@@ -733,30 +680,33 @@ test("geojson-equality for FeatureCollection", (t) => {
             },
           },
         ],
-      },
-      eq = new Equality({
+      };
+    t.true(
+      geojsonEquality(f1, f2, {
         objectComparator: function (obj1, obj2) {
           return "foo_123" in obj1 && "foo_456" in obj2;
         },
-      });
-    t.true(eq.compare(f1, f2), "will use a custom comparator if provided");
+      }),
+      "will use a custom comparator if provided"
+    );
   }
 
   {
     const f1 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 4] },
-      f2 = { type: "FeatureCollection", features: "[]" },
-      eq = new Equality();
+      f2 = { type: "FeatureCollection", features: "[]" };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal if one has bbox and other not"
     );
   }
 
   {
     const f1 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 4] },
-      f2 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 5] },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal if bboxes are not equal");
+      f2 = { type: "FeatureCollection", features: [], bbox: [1, 2, 3, 5] };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal if bboxes are not equal"
+    );
   }
 
   {
@@ -805,9 +755,8 @@ test("geojson-equality for FeatureCollection", (t) => {
           },
         ],
         bbox: [10, 10, 41, 40],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "equal feature collections with bboxes");
+      };
+    t.true(geojsonEquality(f1, f2), "equal feature collections with bboxes");
   }
 
   {
@@ -856,9 +805,8 @@ test("geojson-equality for FeatureCollection", (t) => {
           },
         ],
         bbox: [10, 10, 41, 40],
-      },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "not equal features with equal bboxes");
+      };
+    t.false(geojsonEquality(f1, f2), "not equal features with equal bboxes");
   }
 
   t.end();
@@ -884,10 +832,7 @@ test("geojson-equality for MultiPoint", (t) => {
       ],
     };
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(g1, g2), "are equal");
-  }
+  t.true(geojsonEquality(g1, g2), "are equal");
 
   const g3 = {
     type: "MultiPoint",
@@ -898,10 +843,8 @@ test("geojson-equality for MultiPoint", (t) => {
       [30, 10],
     ],
   };
-  {
-    const eq = new Equality();
-    t.false(eq.compare(g1, g3), "are not equal");
-  }
+
+  t.false(geojsonEquality(g1, g3), "are not equal");
 
   t.end();
 });
@@ -938,21 +881,15 @@ test("geojson-equality for MultiLineString", (t) => {
       ],
     };
 
-  {
-    const eq = new Equality();
-    t.true(
-      eq.compare(g1, g2),
-      "reverse direction, direction is not matched, so both are equal"
-    );
-  }
+  t.true(
+    geojsonEquality(g1, g2),
+    "reverse direction, direction is not matched, so both are equal"
+  );
 
-  {
-    const eq = new Equality({ direction: true });
-    t.false(
-      eq.compare(g1, g2),
-      "reverse direction, direction is matched, so both are not equal"
-    );
-  }
+  t.false(
+    geojsonEquality(g1, g2, { direction: true }),
+    "reverse direction, direction is matched, so both are not equal"
+  );
 
   const g3 = {
     type: "MultiLineString",
@@ -971,10 +908,7 @@ test("geojson-equality for MultiLineString", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.false(eq.compare(g1, g3), "both are not equal");
-  }
+  t.false(geojsonEquality(g1, g3), "both are not equal");
 
   t.end();
 });
@@ -1025,10 +959,7 @@ test("geojson-equality for MultiPolygon", (t) => {
       ],
     };
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(g1, g2), "both are equal");
-  }
+  t.true(geojsonEquality(g1, g2), "both are equal");
 
   const g3 = {
     type: "MultiPolygon",
@@ -1053,10 +984,7 @@ test("geojson-equality for MultiPolygon", (t) => {
     ],
   };
 
-  {
-    const eq = new Equality();
-    t.false(eq.compare(g1, g3), "both are not equal");
-  }
+  t.false(geojsonEquality(g1, g3), "both are not equal");
 
   const gh1 = {
       type: "MultiPolygon",
@@ -1129,10 +1057,7 @@ test("geojson-equality for MultiPolygon", (t) => {
       ],
     };
 
-  {
-    const eq = new Equality();
-    t.true(eq.compare(gh1, gh2), "having holes, both are equal");
-  }
+  t.true(geojsonEquality(gh1, gh2), "having holes, both are equal");
 
   t.end();
 });
@@ -1149,10 +1074,9 @@ test("geojson-equality for GeometryCollection", (t) => {
           { type: "Point", coordinates: [0, 0] },
           { type: "Point", coordinates: [0, 0] },
         ],
-      },
-      eq = new Equality();
+      };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different number of geometries"
     );
   }
@@ -1165,9 +1089,11 @@ test("geojson-equality for GeometryCollection", (t) => {
       f2 = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [1, 1] }],
-      },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal with different geometries");
+      };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal with different geometries"
+    );
   }
 
   {
@@ -1184,10 +1110,9 @@ test("geojson-equality for GeometryCollection", (t) => {
           { type: "Point", coordinates: [1, 1] },
           { type: "Point", coordinates: [0, 0] },
         ],
-      },
-      eq = new Equality();
+      };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal with different order of geometries"
     );
   }
@@ -1200,9 +1125,8 @@ test("geojson-equality for GeometryCollection", (t) => {
       f2 = {
         type: "GeometryCollection",
         geometries: [{ type: "Point", coordinates: [0, 0] }],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "will be equal with equal geometries");
+      };
+    t.true(geojsonEquality(f1, f2), "will be equal with equal geometries");
   }
 
   {
@@ -1213,9 +1137,11 @@ test("geojson-equality for GeometryCollection", (t) => {
       f2 = {
         type: "GeometryCollection",
         geometries: [],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "will be equal with equal with no geometries");
+      };
+    t.true(
+      geojsonEquality(f1, f2),
+      "will be equal with equal with no geometries"
+    );
   }
 
   {
@@ -1224,10 +1150,9 @@ test("geojson-equality for GeometryCollection", (t) => {
         geometries: [],
         bbox: [1, 2, 3, 4],
       },
-      f2 = { type: "GeometryCollection", geometries: "[]" },
-      eq = new Equality();
+      f2 = { type: "GeometryCollection", geometries: "[]" };
     t.false(
-      eq.compare(f1, f2),
+      geojsonEquality(f1, f2),
       "will not be equal if one has bbox and other not"
     );
   }
@@ -1238,9 +1163,11 @@ test("geojson-equality for GeometryCollection", (t) => {
         geometries: [],
         bbox: [1, 2, 3, 4],
       },
-      f2 = { type: "GeometryCollection", geometries: [], bbox: [1, 2, 3, 5] },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "will not be equal if bboxes are not equal");
+      f2 = { type: "GeometryCollection", geometries: [], bbox: [1, 2, 3, 5] };
+    t.false(
+      geojsonEquality(f1, f2),
+      "will not be equal if bboxes are not equal"
+    );
   }
 
   {
@@ -1279,9 +1206,8 @@ test("geojson-equality for GeometryCollection", (t) => {
           },
         ],
         bbox: [10, 10, 41, 40],
-      },
-      eq = new Equality();
-    t.true(eq.compare(f1, f2), "equal geometry collections with bboxes");
+      };
+    t.true(geojsonEquality(f1, f2), "equal geometry collections with bboxes");
   }
 
   {
@@ -1320,9 +1246,8 @@ test("geojson-equality for GeometryCollection", (t) => {
           },
         ],
         bbox: [10, 10, 41, 40],
-      },
-      eq = new Equality();
-    t.false(eq.compare(f1, f2), "not equal geometries with equal bboxes");
+      };
+    t.false(geojsonEquality(f1, f2), "not equal geometries with equal bboxes");
   }
 
   t.end();
