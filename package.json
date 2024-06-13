@@ -1,5 +1,5 @@
 {
-  "name": "geojson-equality",
+  "name": "geojson-equality-ts",
   "version": "0.2.0",
   "description": "Check two valid geojson geometries for equality.",
   "main": "index.js",
@@ -11,20 +11,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/geosquare/geojson-equality.git"
+    "url": "git://github.com/smallsaucepan/geojson-equality-ts.git"
   },
   "bugs": {
-    "url": "https://github.com/geosquare/geojson-equality/issues"
+    "url": "https://github.com/smallsaucepan/geojson-equality-ts/issues"
   },
-  "homepage": "https://github.com/geosquare/geojson-equality",
+  "homepage": "https://github.com/smallsaucepan/geojson-equality-ts",
   "keywords": [
     "geojson",
     "equality",
     "equal",
     "assertion"
   ],
-  "author": "Gagan Bansal <gaganbansal123@gmail.com>",
+  "author": "James Beard <james@smallsaucepan.com>",
   "contributors": [
+    "Samir Shah <solaris.smoke@gmail.com>",
+    "Gagan Bansal <gaganbansal123@gmail.com>",
     "Tim Oram <mitmaro@gmail.com>"
   ],
   "license": "MIT",
