@@ -31,7 +31,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "deep-equal": "^1.0.0"
+    "@types/deep-equal": "^1.0.4",
+    "@types/geojson": "^7946.0.14",
+    "deep-equal": "^2.2.3"
   },
   "devDependencies": {
     "browserify": "~5.10.1",
