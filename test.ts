@@ -35,6 +35,34 @@ test("geojson-equality for Point", (t) => {
   t.end();
 });
 
+test("geojson-equality for Feature ignoring props", (t) => {
+  const g1: Feature<Point> = {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [30, 10],
+      },
+      properties: { foo: "bar" },
+    },
+    g2: Feature<Point> = {
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [30, 10],
+      },
+      properties: { foo: "BAZZZZ" },
+    };
+
+  t.false(geojsonEquality(g1, g2), "are not equal");
+
+  t.true(
+    geojsonEquality(g1, g2, { compareProperties: false }),
+    "are equal when ignoring properties"
+  );
+
+  t.end();
+});
+
 test("geojson-equality for LineString", (t) => {
   const g1: LineString = {
       type: "LineString",
@@ -412,54 +440,6 @@ test("geojson-equality for Feature", (t) => {
     );
   }
 
-  /*
-  {
-    // Temporarily disabled as not needed specifically for Turfjs.
-    const f1: Feature<Polygon> = {
-        type: "Feature",
-        id: "id1",
-        properties: { foo_123: "bar" },
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [40, 20],
-              [31, 10],
-              [30, 20],
-              [30, 10],
-              [10, 40],
-            ],
-          ],
-        },
-      },
-      f2: Feature<Polygon> = {
-        type: "Feature",
-        id: "id1",
-        properties: { foo_456: "bar" },
-        geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [40, 20],
-              [31, 10],
-              [30, 20],
-              [30, 10],
-              [10, 40],
-            ],
-          ],
-        },
-      };
-    t.true(
-      geojsonEquality(f1, f2, {
-        objectComparator: function (obj1, obj2) {
-          return "foo_123" in obj1 && "foo_456" in obj2;
-        },
-      }),
-      "will use a custom comparator if provided"
-    );
-  }
-  */
-
   {
     const f1: Feature<any> = {
         type: "Feature",
@@ -719,64 +699,6 @@ test("geojson-equality for FeatureCollection", (t) => {
       "will be equal with equal with no features"
     );
   }
-
-  /*
-  {
-    // Temporarily disabled as not needed specifically for Turfjs.
-    const f1: FeatureCollection<Polygon> = {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            id: "id1",
-            properties: { foo_123: "bar" },
-            geometry: {
-              type: "Polygon",
-              coordinates: [
-                [
-                  [40, 20],
-                  [31, 10],
-                  [30, 20],
-                  [30, 10],
-                  [10, 40],
-                ],
-              ],
-            },
-          },
-        ],
-      },
-      f2: FeatureCollection<Polygon> = {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            id: "id1",
-            properties: { foo_456: "bar" },
-            geometry: {
-              type: "Polygon",
-              coordinates: [
-                [
-                  [40, 20],
-                  [31, 10],
-                  [30, 20],
-                  [30, 10],
-                  [10, 40],
-                ],
-              ],
-            },
-          },
-        ],
-      };
-    t.true(
-      geojsonEquality(f1, f2, {
-        objectComparator: function (obj1, obj2) {
-          return "foo_123" in obj1 && "foo_456" in obj2;
-        },
-      }),
-      "will use a custom comparator if provided"
-    );
-  }
-  */
 
   {
     const f1: FeatureCollection<any> = {
