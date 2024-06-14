@@ -2,7 +2,7 @@
 
 Check two valid geojson geometries for equality.
 
-This library is a fork of geojson-equality by Gagan Bansal (@gagan-bansal), ported to Typescript by Samir Shar (@solarissmoke). Published and maintained going forward by James Beard (@smallsaucepan).
+This library is a fork of geojson-equality by Gagan Bansal (@gagan-bansal), ported to Typescript by Samir Shah (@solarissmoke). Published and maintained going forward by James Beard (@smallsaucepan).
 
 ## Installation
 
