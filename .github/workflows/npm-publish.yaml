@@ -1,7 +1,10 @@
-name: npm-publish
+name: NPM publish
 on:
   release:
     types: [published]
+
+permissions:
+  contents: write
 
 jobs:
   npm-publish:
