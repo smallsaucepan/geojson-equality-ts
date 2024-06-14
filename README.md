@@ -2,13 +2,15 @@
 
 Check two valid geojson geometries for equality.
 
-## installation
+This library is a fork of geojson-equality by Gagan Bansal (@gagan-bansal), ported to Typescript by Samir Shar (@solarissmoke). Published and maintained going forward by James Beard (@smallsaucepan).
+
+## Installation
 
 ```
 npm install geojson-equality-ts
 ```
 
-## usage
+## Usage
 
 Use as either a class or function.
 
@@ -69,7 +71,9 @@ const g3 = {
 eq.compare(g1, g3); // returns false
 ```
 
-- **precision** number as floating points precision required. Defualt is **17**
+## Options
+
+**precision** _number_ floating point precision required. Defualt is **17**.
 
 ```javascript
 const g1 = { type: "Point", coordinates: [30.2, 10] };
@@ -80,7 +84,7 @@ geojsonEquality(g1, g2, { precision: 3 }); // returns false
 geojsonEquality(g1, g2, { precision: 1 }); // returns true
 ```
 
-- **direction** true | false, direction of LineString or Polygon (orientation) is ignored if false. Default is **false**.
+**direction** _boolean_ direction of LineString or Polygon (orientation) is ignored if false. Default is **false**.
 
 ```javascript
 const g1 = {
@@ -105,7 +109,7 @@ geojsonEquality(g1, g2, { direction: false }); // returns true
 geojsonEquality(g1, g2, { direction: true }); // returns false
 ```
 
-- **objectComparator** **Temporarily disabled** function, custom function for use in comparing Feature properties. Default is a shallow comparison.
+**objectComparator** _function_ custom function for use in comparing Feature properties. Default is a shallow comparison. **Temporarily disabled**
 
 ```javascript
 // using lodash isEqual to deep comparison
@@ -113,7 +117,7 @@ const isEqual = require("lodash/lang/isEqual");
 const eq = new GeojsonEquality({ objectComparator: isEqual });
 ```
 
-## developing
+## Developing
 
 Once you run
 
@@ -127,6 +131,8 @@ to create build
 
 `npm run build`
 
-## license
+PRs are welcome.
+
+## License
 
 This project is licensed under the terms of the MIT license.
