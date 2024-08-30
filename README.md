@@ -15,7 +15,7 @@ npm install geojson-equality-ts
 Use as either a class or function.
 
 ```typescript
-import { geojsonEquality, GeojsonEquality } from "geojson-equality";
+import { geojsonEquality, GeojsonEquality } from "geojson-equality-ts";
 
 // ... create g1 and g2 GeoJSON objects
 
@@ -28,7 +28,7 @@ eq.compare(g1, g2); // returns boolean
 In more detail.
 
 ```typescript
-const GeojsonEquality = require("geojson-equality");
+const GeojsonEquality = require("geojson-equality-ts");
 const eq = new GeojsonEquality();
 
 const g1: Polygon = {
